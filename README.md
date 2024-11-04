@@ -1,1 +1,1 @@
-# ms-exchange-rate-v1
+# ms-exchange-rate
