@@ -8,6 +8,4 @@ import java.util.List;
 public interface ExchangeRateDao {
 
     Single<ExchangeRate> getExchangeRate(String originalCurrency, String exchangeCurrency);
-
-    Single<List<ExchangeRate>> listExchangeRate();
 }
