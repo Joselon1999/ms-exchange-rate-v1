@@ -5,23 +5,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "exchange_rate")
 @Getter
 @Setter
 @NoArgsConstructor
-public class ExchangeRate {
+public class ExchangeRateEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="moneda_origen")
-    private String monedaOrigen;
+    @Column(name="origin_currency")
+    private String originCurrency;
 
-    @Column(name="moneda_destino")
-    private String monedaDestino;
+    @Column(name="exchange_currency")
+    private String exchangeCurrency;
 
-    @Column(name="monto_tipo_cambio")
-    private double montoTipoCambio;
+    @Column(name="exchange_amount")
+    private BigDecimal exchangeAmount;
 }

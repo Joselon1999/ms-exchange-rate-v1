@@ -1,4 +1,4 @@
-INSERT INTO EXCHANGE_RATE (moneda_origen, moneda_destino, monto_tipo_cambio)
+INSERT INTO EXCHANGE_RATE (origin_currency, exchange_currency, exchange_amount)
 VALUES
     ('PEN','USD', 0.27),
     ('USD','PEN', 3.70),

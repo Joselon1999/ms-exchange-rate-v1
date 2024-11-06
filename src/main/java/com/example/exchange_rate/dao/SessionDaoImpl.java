@@ -2,15 +2,27 @@ package com.example.exchange_rate.dao;
 
 import com.example.exchange_rate.dto.ExchangeRateRequest;
 import com.example.exchange_rate.dto.ExchangeRateResponse;
+import com.example.exchange_rate.dto.domain.ExchangeRate;
 import com.example.exchange_rate.util.constants.Constants;
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
+import org.springframework.data.redis.core.ReactiveRedisOperations;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.core.ReactiveValueOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -18,25 +30,24 @@ import java.util.concurrent.TimeUnit;
 public class SessionDaoImpl implements SessionDao{
 
     @Autowired
-    private RedisTemplate<String, ExchangeRateResponse> redisTemplate;
+    private RedisTemplate<String, ExchangeRate> redisTemplate;
 
     @Override
-    public Single<ExchangeRateResponse> save(ExchangeRateResponse exchangeRateResponse) {
-        return Single.fromCallable(() -> {
+    public Completable save(ExchangeRate exchangeRate) {
+        return Completable.fromCallable(() -> {
             redisTemplate.opsForValue().set(
-                    generateKey(exchangeRateResponse.getOriginalCurrency(), exchangeRateResponse.getExchangeCurrency()),
-                    exchangeRateResponse,
+                    generateKey(exchangeRate.getOriginalCurrency(), exchangeRate.getExchangeCurrency()),
+                    exchangeRate,
                     5,
                     TimeUnit.MINUTES
             );
-            return exchangeRateResponse;
+            return exchangeRate;
         })
-                .doOnSuccess(r -> log.info("Success on SessionDaoImpl.save"))
+                .doOnComplete(() -> log.info("Success on SessionDaoImpl.save"))
                 .doOnError(th -> log.error("Error on SessionDaoImpl.save",th));
     }
-
     @Override
-    public Maybe<ExchangeRateResponse> findById(ExchangeRateRequest request) {
+    public Maybe<ExchangeRate> findById(ExchangeRate request) {
         return Maybe.fromCallable(() -> redisTemplate.opsForValue()
                         .get(generateKey(request.getOriginalCurrency(),
                                 request.getExchangeCurrency())))
@@ -48,8 +59,8 @@ public class SessionDaoImpl implements SessionDao{
 
     private String generateKey(String originalCurrency, String exchangeCurrency) {
         return Constants.REDIS
-                .concat(originalCurrency)
+                .concat(Optional.of(originalCurrency).orElse(""))
                 .concat(Constants.TO)
-                .concat(exchangeCurrency);
+                .concat(Optional.of(exchangeCurrency).orElse(""));
     }
 }

@@ -1,19 +1,26 @@
 package com.example.exchange_rate.mapper;
 
+import com.example.exchange_rate.dto.ExchangeRateRequest;
 import com.example.exchange_rate.dto.ExchangeRateResponse;
-import com.example.exchange_rate.dto.entity.ExchangeRate;
-import org.mapstruct.InjectionStrategy;
+import com.example.exchange_rate.dto.domain.ExchangeRate;
+import com.example.exchange_rate.dto.entity.ExchangeRateEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+
+import java.math.BigDecimal;
 
 @Mapper(componentModel = "spring")
 public interface MapperConfiguration {
 
-    @Mapping(target = "originalCurrency", source = "exchangeRate.monedaOrigen")
-    @Mapping(target = "exchangeCurrency", source = "exchangeRate.monedaDestino")
+    ExchangeRate fromExchangeRateRequestToExchangeRate(ExchangeRateRequest exchangeRate);
+
+    @Mapping(target = "originalCurrency", source = "e.originCurrency")
+    @Mapping(target = "exchangeCurrency", source = "e.exchangeCurrency")
     @Mapping(target = "originalAmount", source = "originalAmount")
-    @Mapping(target = "exchangeAmount", expression = "java(originalAmount * exchangeRate.getMontoTipoCambio())")
-    ExchangeRateResponse mapExchangeRateResponse(ExchangeRate exchangeRate, double originalAmount);
+    @Mapping(target = "exchangeAmount", expression = "java(e.getExchangeAmount().multiply(originalAmount))")
+    @Mapping(target = "exchangeRate", source = "e.exchangeAmount")
+    ExchangeRate fromExchangeRateEntityToExchangeRate(ExchangeRateEntity e, BigDecimal originalAmount);
+
+    ExchangeRateResponse fromExchangeRateToExchangeRateResponse(ExchangeRate exchangeRate);
 
 }

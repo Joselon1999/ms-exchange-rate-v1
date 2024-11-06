@@ -2,6 +2,8 @@ package com.example.exchange_rate.dto;
 
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -11,6 +13,7 @@ public class ExchangeRateResponse {
 
     private String originalCurrency;
     private String exchangeCurrency;
-    private double originalAmount;
-    private double exchangeAmount;
+    private BigDecimal originalAmount;
+    private BigDecimal exchangeAmount;
+    private BigDecimal exchangeRate;
 }
