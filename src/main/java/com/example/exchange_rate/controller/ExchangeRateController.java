@@ -4,6 +4,7 @@ import com.example.exchange_rate.dto.ExchangeRateRequest;
 import com.example.exchange_rate.dto.ExchangeRateResponse;
 import com.example.exchange_rate.mapper.MapperConfiguration;
 import com.example.exchange_rate.service.ExchangeRateService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.reactivex.rxjava3.core.Single;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,9 @@ public class ExchangeRateController {
     private MapperConfiguration mapperConfiguration;
 
     @PostMapping("/exchange-rate")
+    @CircuitBreaker(name = "CircuitBreakerService")
     public Single<ExchangeRateResponse> getExchangeRate(@Valid @RequestBody ExchangeRateRequest request) {
+
         return Single.just(mapperConfiguration.fromExchangeRateRequestToExchangeRate(request))
                         .flatMap(exchangeRate -> exchangeRateService.getExchangeRate(exchangeRate))
                 .map(exchangeRate -> mapperConfiguration.fromExchangeRateToExchangeRateResponse(exchangeRate))
