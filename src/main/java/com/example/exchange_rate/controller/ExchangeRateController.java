@@ -11,9 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
+@RequestMapping("/exchange-rate")
 @Slf4j
 public class ExchangeRateController {
 
@@ -23,13 +25,12 @@ public class ExchangeRateController {
     @Autowired
     private MapperConfiguration mapperConfiguration;
 
-    @PostMapping("/exchange-rate")
-    @CircuitBreaker(name = "CircuitBreakerService")
+    @PostMapping("/")
     public Single<ExchangeRateResponse> getExchangeRate(@Valid @RequestBody ExchangeRateRequest request) {
 
         return Single.just(mapperConfiguration.fromExchangeRateRequestToExchangeRate(request))
-                        .flatMap(exchangeRate -> exchangeRateService.getExchangeRate(exchangeRate))
-                .map(exchangeRate -> mapperConfiguration.fromExchangeRateToExchangeRateResponse(exchangeRate))
+                        .flatMap(exchangeRateService::getExchangeRate)
+                .map(mapperConfiguration::fromExchangeRateToExchangeRateResponse)
                 .doOnSuccess(r -> log.info("Success on ExchangeRateController.getExchangeRate"))
                 .doOnError(th -> log.error("Error on ExchangeRateController.getExchangeRate"));
     }

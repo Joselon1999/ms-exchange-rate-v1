@@ -35,7 +35,7 @@ class ExchangeRateDaoImplTest {
     }
 
     @Test
-    public void testGetExchangeRate_Success() {
+    public void whenGetExchangeRateReturnsSuccess() {
         Mockito.when(repository.findByOriginCurrencyAndExchangeCurrency("USD", "PEN"))
                 .thenReturn(Optional.of(exchangeRateEntity));
 
@@ -61,7 +61,7 @@ class ExchangeRateDaoImplTest {
 
 
     @Test
-    public void testGetExchangeRate_Error() {
+    public void whenGetExchangeRateReturnsError() {
 
         Mockito.when(repository.findByOriginCurrencyAndExchangeCurrency(Mockito.anyString(), Mockito.anyString()))
                 .thenThrow(new RuntimeException("Error de JPA"));

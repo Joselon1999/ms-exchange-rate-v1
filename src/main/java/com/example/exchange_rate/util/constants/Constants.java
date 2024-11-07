@@ -10,7 +10,7 @@ public final class Constants {
     public static final String MES001 = "Error al comunicarse con servicio externo";
     public static final String STA001 = "503";
     public static final String COD002 = "EX0002";
-    public static final String MES002 = "No se encontro el recurso";
+    public static final String MES002 = "No se encontro el tipo de cambio solicitado";
     public static final String STA002 = "400";
     public static final String MES003 = "EX0003";
     public static final String SMS003 = "Errror 1";

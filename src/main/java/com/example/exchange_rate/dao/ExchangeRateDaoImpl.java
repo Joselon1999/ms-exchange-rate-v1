@@ -3,6 +3,7 @@ package com.example.exchange_rate.dao;
 import com.example.exchange_rate.dto.entity.ExchangeRateEntity;
 import com.example.exchange_rate.repository.ExchangeRateRepository;
 import com.example.exchange_rate.util.exception.CustomException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.reactivex.rxjava3.core.Single;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
     private ExchangeRateRepository repository;
 
     @Override
+    @CircuitBreaker(name = "CircuitBreakerService")
     public Single<ExchangeRateEntity> getExchangeRate(String originalCurrency, String exchangeCurrency) {
         return Single.fromCallable(() -> repository.findByOriginCurrencyAndExchangeCurrency(originalCurrency, exchangeCurrency)
                         .orElseThrow(() -> new CustomException(COD002, MES002, STA002)))
