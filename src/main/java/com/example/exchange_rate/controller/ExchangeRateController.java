@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ExchangeRateController {
 
+
+    //agregar cupon para tipo de cambio especial
+    //sumar un factor adicional
     @Autowired
     private ExchangeRateService exchangeRateService;
 
@@ -29,7 +32,7 @@ public class ExchangeRateController {
     public Single<ExchangeRateResponse> getExchangeRate(@Valid @RequestBody ExchangeRateRequest request) {
 
         return Single.just(mapperConfiguration.fromExchangeRateRequestToExchangeRate(request))
-                        .flatMap(exchangeRateService::getExchangeRate)
+                        .flatMap(exchangeRate -> exchangeRateService.getExchangeRate(exchangeRate,request.getCoupon()))
                 .map(mapperConfiguration::fromExchangeRateToExchangeRateResponse)
                 .doOnSuccess(r -> log.info("Success on ExchangeRateController.getExchangeRate"))
                 .doOnError(th -> log.error("Error on ExchangeRateController.getExchangeRate"));

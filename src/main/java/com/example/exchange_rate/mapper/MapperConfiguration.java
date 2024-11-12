@@ -23,4 +23,11 @@ public interface MapperConfiguration {
 
     ExchangeRateResponse fromExchangeRateToExchangeRateResponse(ExchangeRate exchangeRate);
 
+    @Mapping(target = "originalCurrency", source = "e.originalCurrency")
+    @Mapping(target = "exchangeCurrency", source = "e.exchangeCurrency")
+    @Mapping(target = "originalAmount", source = "originalAmount")
+    @Mapping(target = "exchangeAmount", expression = "java(e.getExchangeRate().multiply(originalAmount))")
+    @Mapping(target = "exchangeRate", source = "e.exchangeRate")
+    ExchangeRate fromCacheToExchangeRateResponse(ExchangeRate e, BigDecimal originalAmount);
+
 }

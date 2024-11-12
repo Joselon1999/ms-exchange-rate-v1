@@ -23,4 +23,7 @@ public class ExchangeRateRequest {
 
     @Positive(message = "Amount must be positive")
     private BigDecimal originalAmount;
+
+    //todo validar
+    private String coupon;
 }

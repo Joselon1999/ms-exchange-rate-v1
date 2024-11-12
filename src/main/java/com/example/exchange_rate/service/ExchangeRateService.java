@@ -7,5 +7,5 @@ import io.reactivex.rxjava3.core.Single;
 
 public interface ExchangeRateService {
 
-    Single<ExchangeRate> getExchangeRate(ExchangeRate request);
+    Single<ExchangeRate> getExchangeRate(ExchangeRate request,String coupon);
 }
